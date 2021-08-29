@@ -3,14 +3,15 @@ package local
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
 	Client   *sql.DB
 	username = "root"
-	password = "Engineering"
+	password = "filling"
 	host     = "localhost"
 	schema   = "SCADA_MASTER"
 )

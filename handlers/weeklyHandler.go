@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/service"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
-	"strings"
-	"time"
 )
 
 const (
-	interval int = 5
+	interval  int    = 5
 	startDate string = "2021-01-01 00:00:00"
 )
 
@@ -30,13 +31,13 @@ func (h *WeeklyHandler) FetchAndSaveFromRemoteToLocal(branchIndex int, dtFrom, d
 
 			// TODO set start date to beginning
 			//startDateTime, _ = dateTime.ParseDateTimeFromString(dateTime.Layout1, "2021-01-01 00:00:00")
-			tempTime := time.Now().Add(-time.Hour * time.Duration(24))
+			tempTime := time.Now().Add(-time.Hour * time.Duration(5*24)) // this tow days before today
 			startDateTime = &tempTime
 		} else {
 			return err
 		}
 	} else {
-		*startDateTime = lastWeekly.FinalDateTime
+		startDateTime = &lastWeekly.FinalDateTime
 	}
 
 	startDateTime, _ = dateTime.ChangeDateTimeMinToFactorWrapper(startDateTime, interval, true)
@@ -49,4 +50,3 @@ func (h *WeeklyHandler) FetchAndSaveFromRemoteToLocal(branchIndex int, dtFrom, d
 	}
 	return nil
 }
-

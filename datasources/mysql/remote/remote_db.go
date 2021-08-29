@@ -3,10 +3,11 @@ package remote
 import (
 	"database/sql"
 	"fmt"
+	"os"
+
 	"github.com/fatih/color"
 	_ "github.com/go-sql-driver/mysql"
 	"gopkg.in/yaml.v2"
-	"os"
 )
 
 var (
@@ -18,7 +19,6 @@ func init() {
 	conf := configure("config.yml")
 	setup(conf.Databases)
 }
-
 
 func configure(fileName string) Config {
 	var config Config
@@ -50,5 +50,6 @@ func Open(index int) (*sql.DB, *error) {
 		color.Red(fmt.Sprintf("Couldn't connect to remote database with index %v", index))
 		return nil, &err
 	}
+	color.Green(fmt.Sprintf("Successfully connected to remoteDB with index of %v", index))
 	return db, nil
 }
