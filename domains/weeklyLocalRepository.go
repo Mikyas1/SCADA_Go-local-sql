@@ -2,13 +2,14 @@ package domains
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
 )
 
 const (
-	queryInsertWeekly = "INSERT INTO table_name (count, final_datetime) VALUES(?, ?);"
-	queryGetLatestWeekly = "SELECT MAX(final_datetime) as final_datetime, count FROM table_name;"
+	queryInsertWeekly = "INSERT INTO %s (count, final_datetime) VALUES(?, ?);"
+	queryGetLatestWeekly = "SELECT MAX(final_datetime) as finalDatetime, count FROM %s;"
 )
 
 type weeklyLocalRepositoryDb struct {
@@ -16,24 +17,26 @@ type weeklyLocalRepositoryDb struct {
 }
 
 func (r weeklyLocalRepositoryDb) Save(w Weekly, branchIndex int) *error {
-	stmt, err := r.client.Prepare(queryInsertWeekly)
+	query := fmt.Sprintf(queryInsertWeekly, fmt.Sprintf("BDashboard_%v", branchIndex))
+	stmt, err := r.client.Prepare(query)
 	if err != nil {
-		color.Red("error when trying to prepare save weekly statement")
+		color.Red(fmt.Sprintf("SQL ERROR: error when trying to prepare save weekly statement for index `%v`", branchIndex))
 		return &err
 	}
 	defer stmt.Close()
 	_, saveErr := stmt.Exec(w.Count, w.FinalDateTime)
 	if saveErr != nil {
-		color.Red("error when trying to run save weekly statement")
+		color.Red(fmt.Sprintf("QL ERROR: error when trying to run save weekly statement for index `%v`", branchIndex))
 		return &saveErr
 	}
 	return nil
 }
 
 func (r weeklyLocalRepositoryDb) GetLatestWeekly(branchIndex int) (*Weekly, *error) {
-	stmt, err := r.client.Prepare(queryGetLatestWeekly)
+	query := fmt.Sprintf(queryGetLatestWeekly, fmt.Sprintf("BDashboard_%v", branchIndex))
+	stmt, err := r.client.Prepare(query)
 	if err != nil {
-		color.Red("error when trying to prepare get latest weekly statement")
+		color.Red(fmt.Sprintf("SQL ERROR: %s", err))
 		return nil, &err
 	}
 	defer stmt.Close()

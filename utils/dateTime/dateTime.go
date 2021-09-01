@@ -7,6 +7,7 @@ import (
 const (
 	Layout1 string = "2006-01-02 15:04:05"
 	Layout2 string = "2006-01-02 15:04"
+	Layout3 string = "2006-01-02"
 )
 
 func ParseDateTimeFromString(layout, str string) (*time.Time, *error) {
@@ -18,8 +19,17 @@ func ParseDateTimeFromString(layout, str string) (*time.Time, *error) {
 }
 
 func removeSecondsFromDateTime(dt time.Time) (*time.Time, *error) {
-	temp := dt.Format("2006-01-02 15:04")
-	resDt, err := ParseDateTimeFromString("2006-01-02 15:04", temp)
+	temp := dt.Format(Layout2)
+	resDt, err := ParseDateTimeFromString(Layout2, temp)
+	if err != nil {
+		return nil, err
+	}
+	return resDt, nil
+}
+
+func GetOnlyDateFormDateTime(dt time.Time) (*time.Time, *error) {
+	temp := dt.Format(Layout3)
+	resDt, err := ParseDateTimeFromString(Layout3, temp)
 	if err != nil {
 		return nil, err
 	}
@@ -54,4 +64,14 @@ func ChangeDateTimeMinToFactorWrapper(dt *time.Time, factor int, up bool) (*time
 		return nil, err
 	}
 	return changeDateTimeMinToFactor(dt, factor, up)
+}
+
+func GetYesterday() (*time.Time, *error) {
+	//now := time.Now().AddDate(0, 0, -1)
+	now := time.Now()
+	dt, err := GetOnlyDateFormDateTime(now)
+	if err != nil {
+		return nil, err
+	}
+	return dt, nil
 }

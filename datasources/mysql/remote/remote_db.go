@@ -47,7 +47,11 @@ func setup(databases []Server) {
 func Open(index int) (*sql.DB, *error) {
 	db, err := sql.Open("mysql", connectionURL[index])
 	if err != nil {
-		color.Red(fmt.Sprintf("Couldn't connect to remote database with index %v", index))
+		color.Red(fmt.Sprintf("SQL ERROR: Couldn't connect to remote database with index %v", index))
+		return nil, &err
+	}
+	if err = db.Ping(); err != nil {
+		color.Red(fmt.Sprintf("SQL ERROR: %s. For branch with index %v", err, index))
 		return nil, &err
 	}
 	color.Green(fmt.Sprintf("Successfully connected to remoteDB with index of %v", index))

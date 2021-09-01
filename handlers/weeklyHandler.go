@@ -31,8 +31,7 @@ func (h *WeeklyHandler) FetchAndSaveFromRemoteToLocal(branchIndex int, dtFrom, d
 
 			// TODO set start date to beginning
 			//startDateTime, _ = dateTime.ParseDateTimeFromString(dateTime.Layout1, "2021-01-01 00:00:00")
-			tempTime := time.Now().Add(-time.Hour * time.Duration(5*24)) // this tow days before today
-			startDateTime = &tempTime
+			startDateTime, _ = dateTime.GetOnlyDateFormDateTime(time.Now().AddDate(0, 0, -2)) // this two days before today
 		} else {
 			return err
 		}
@@ -43,7 +42,6 @@ func (h *WeeklyHandler) FetchAndSaveFromRemoteToLocal(branchIndex int, dtFrom, d
 	startDateTime, _ = dateTime.ChangeDateTimeMinToFactorWrapper(startDateTime, interval, true)
 	dtTo, _ = dateTime.ChangeDateTimeMinToFactorWrapper(dtTo, interval, false)
 
-	// TODO prepare start and to date time
 	err = h.Service.GetWeekliesAndSave(*startDateTime, *dtTo, interval, branchIndex)
 	if err != nil {
 		return err

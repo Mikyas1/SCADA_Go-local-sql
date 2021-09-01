@@ -35,13 +35,13 @@ func (s DefaultCustomerService) GetWeekliesAndSave(dtFrom, dtTo time.Time, inter
 		tempFormAfterInterval := tempFrom.Add(time.Minute * time.Duration(interval))
 		weekly, err := s.remoteRepo.FindByTimeInterval(branchIndex, tempFrom, tempFormAfterInterval)
 		if err != nil {
-			color.Red(fmt.Sprintf("error happend when geting weekly from REMOTE DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
+			color.Red(fmt.Sprintf("SERVICE ERROR: error happend when getting weekly from REMOTE DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
 			return err
 		}
 
 		err = s.SaveWeekly(*weekly, branchIndex)
 		if err != nil {
-			color.Red(fmt.Sprintf("error happend when saving weekly to LOCAL DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
+			color.Red(fmt.Sprintf("SERVICE ERROR: error happend when saving weekly to LOCAL DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
 			return err
 		}
 

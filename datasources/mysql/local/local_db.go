@@ -3,36 +3,35 @@ package local
 import (
 	"database/sql"
 	"fmt"
-	"log"
-
+	"github.com/fatih/color"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	Client   *sql.DB
 	username = "root"
-	password = "filling"
+	password = "Engineering"
 	host     = "localhost"
 	schema   = "SCADA_MASTER"
 )
 
-func init() {
+// Open database connection
+func Open() (*sql.DB, *error) {
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
 		username,
 		password,
 		host,
-		schema,
-	)
+		schema)
 
-	var err error
-	Client, err = sql.Open("mysql", dataSourceName)
+	Client, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
-		panic(err)
+		color.Red(fmt.Sprintf("SQL ERROR: %s", err))
+		return nil, &err
 	}
 	if err = Client.Ping(); err != nil {
-		panic(err)
+		color.Red(fmt.Sprintf("SQL ERROR: %s", err))
+		return nil, &err
 	}
 
-	log.Println("Local database successfully Connected.")
-
+	color.Green("Successfully Connected to Local database.")
+	return Client, nil
 }

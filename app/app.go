@@ -2,41 +2,35 @@ package app
 
 import (
 	"fmt"
+	"github.com/Mikyas1/SCADA_Go-local-sql/lines"
+	"github.com/fatih/color"
 	"time"
 
-	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
-	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
-	"github.com/Mikyas1/SCADA_Go-local-sql/domains"
-	"github.com/Mikyas1/SCADA_Go-local-sql/handlers"
-	"github.com/Mikyas1/SCADA_Go-local-sql/service"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 )
 
 func Start() {
 
-	remoteDB, err := remote.Open(5) // index 3
+	go X(1)
+	go X(2)
+
+	fmt.Scanln()
+
+}
+
+
+func X(index int) {
+	ln, err := lines.NewBDashboardLine(index)
 	if err != nil {
-		panic("couldn't connect to remote server")
-	}
-	defer remoteDB.Close()
-
-	wh := handlers.WeeklyHandler{
-		Service: service.NewCustomerService(
-			domains.NewWeeklyLocalRepositoryDb(local.Client),
-			domains.NewWeeklyRemoteRepositoryDb(remoteDB)),
+		color.Red(fmt.Sprintf("LINE ERROR: error creating communication line for remoteDB Branch index `%v` and localDB", index))
+		return
 	}
 
-	// wh := handlers.WeeklyHandler{
-	// 	Service: service.NewCustomerService(
-	// 		domains.NewWeeklyLocalRepositoryDb(local.Client),
-	// 		domains.NewWeeklyRemoteRepositoryStub()),
-	// }
-
-	now := time.Now().Add(-time.Hour * time.Duration(24*2)) // yesterday
-	// app should not be concerned with errors
-	err = wh.FetchAndSaveFromRemoteToLocal(1, nil, &now)
+	dt, _ := dateTime.GetYesterday()
+	err = ln.RunLine(*dt)
 	if err != nil {
-		fmt.Println(err)
+		color.Red(fmt.Sprintf("LINE ERROR: error running communication line for remoteDB Branch index `%v` and localDB", index))
+		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
 	}
 }
 
