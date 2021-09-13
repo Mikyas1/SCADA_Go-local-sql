@@ -10,7 +10,7 @@ import (
 )
 
 type RemoteRepositoryDb struct {
-	client   *sql.DB
+	client    *sql.DB
 	qWeeklies []QWeekly
 }
 

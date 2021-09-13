@@ -3,12 +3,13 @@ package Qweekly
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
 )
 
 const (
-	queryInsertQWeekly = "INSERT INTO %s (count, process_time, namem, process_id, cyl_type) VALUES(?, ?, ?, ?, ?);"
+	queryInsertQWeekly    = "INSERT INTO %s (count, process_time, namem, process_id, cyl_type) VALUES(?, ?, ?, ?, ?);"
 	queryGetLatestQWeekly = "SELECT MAX(process_time) as processDateTime, count FROM %s;"
 )
 
@@ -24,7 +25,7 @@ func (r qWeeklyLocalRepositoryDb) Save(w QWeekly, branchIndex int) *error {
 		return &err
 	}
 	defer stmt.Close()
-	_, saveErr := stmt.Exec(w.Count, w.ProcessTime, w.Namem, w.ProcessId, w.CylinderType)
+	_, saveErr := stmt.Exec(w.Count, w.ProcessTime, w.Namem, w.getProcessId(), w.getCylinderType())
 	if saveErr != nil {
 		color.Red(fmt.Sprintf("QL ERROR: error when trying to run save QWeekly statement for index `%v`", branchIndex))
 		return &saveErr

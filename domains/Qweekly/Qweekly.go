@@ -10,6 +10,22 @@ type QWeekly struct {
 	CylinderType int
 }
 
+func (d QWeekly) getProcessId() *int {
+	processId := &d.ProcessId
+	if d.ProcessId == 0 {
+		processId = nil
+	}
+	return processId
+}
+
+func (d QWeekly) getCylinderType() *int {
+	cylinderType := &d.CylinderType
+	if d.CylinderType == 0 {
+		cylinderType = nil
+	}
+	return cylinderType
+}
+
 type LocalRepository interface {
 	Save(QWeekly, int) *error
 	GetLatestQWeekly(int) (*QWeekly, *error)
