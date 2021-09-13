@@ -2,24 +2,24 @@ package service
 
 import (
 	"fmt"
-	"github.com/Mikyas1/SCADA_Go-local-sql/domains"
+	"github.com/Mikyas1/SCADA_Go-local-sql/domains/weekly"
 	"github.com/fatih/color"
 	"time"
 )
 
 type WeeklyService interface {
-	SaveWeekly(weekly domains.Weekly, branchIndex int) *error
-	GetLatestWeekly(branchIndex int) (*domains.Weekly, *error)
+	SaveWeekly(weekly weekly.Weekly, branchIndex int) *error
+	GetLatestWeekly(branchIndex int) (*weekly.Weekly, *error)
 	GetWeekliesAndSave(time.Time, time.Time, int, int) *error
 }
 
 
-type DefaultCustomerService struct {
-	localRepo  domains.WeeklyLocalRepository
-	remoteRepo domains.WeeklyRemoteRepository
+type DefaultWeeklyService struct {
+	localRepo  weekly.WeeklyLocalRepository
+	remoteRepo weekly.WeeklyRemoteRepository
 }
 
-func (s DefaultCustomerService) SaveWeekly(weekly domains.Weekly, branchIndex int) *error {
+func (s DefaultWeeklyService) SaveWeekly(weekly weekly.Weekly, branchIndex int) *error {
 	err := s.localRepo.Save(weekly, branchIndex)
 	if err != nil {
 		return err
@@ -27,7 +27,7 @@ func (s DefaultCustomerService) SaveWeekly(weekly domains.Weekly, branchIndex in
 	return nil
 }
 
-func (s DefaultCustomerService) GetWeekliesAndSave(dtFrom, dtTo time.Time, interval, branchIndex int) *error {
+func (s DefaultWeeklyService) GetWeekliesAndSave(dtFrom, dtTo time.Time, interval, branchIndex int) *error {
 	//branch index hard coded
 	tempFrom := dtFrom
 
@@ -53,7 +53,7 @@ func (s DefaultCustomerService) GetWeekliesAndSave(dtFrom, dtTo time.Time, inter
 	return nil
 }
 
-func (s DefaultCustomerService) GetLatestWeekly(branchIndex int) (*domains.Weekly, *error) {
+func (s DefaultWeeklyService) GetLatestWeekly(branchIndex int) (*weekly.Weekly, *error) {
 	weekly, err := s.localRepo.GetLatestWeekly(branchIndex)
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (s DefaultCustomerService) GetLatestWeekly(branchIndex int) (*domains.Weekl
 	return weekly, nil
 }
 
-func NewCustomerService(localRepo domains.WeeklyLocalRepository, remoteRepo domains.WeeklyRemoteRepository) DefaultCustomerService {
-	return DefaultCustomerService{
+func NewWeeklyService(localRepo weekly.WeeklyLocalRepository, remoteRepo weekly.WeeklyRemoteRepository) DefaultWeeklyService {
+	return DefaultWeeklyService{
 		localRepo: localRepo,
 		remoteRepo: remoteRepo,
 	}

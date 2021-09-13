@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
-	"github.com/Mikyas1/SCADA_Go-local-sql/domains/weekly"
+	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qweekly"
 	"github.com/Mikyas1/SCADA_Go-local-sql/handlers"
 	"github.com/Mikyas1/SCADA_Go-local-sql/service"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
@@ -13,23 +13,23 @@ import (
 	"time"
 )
 
-type BDashboardLine struct {
-	handler     handlers.WeeklyHandler
+type QWeeklyLine struct {
+	handler     handlers.QWeeklyHandler
 	branchIndex int
 	remoteDb	*sql.DB
 	localDB		*sql.DB
 }
 
-func (l BDashboardLine) CloseAllDb() {
+func (l QWeeklyLine) CloseAllDb() {
 	if l.remoteDb != nil {
 		l.remoteDb.Close()
 	}
 	l.localDB.Close()
 }
 
-func (l BDashboardLine) RunLine(toDt time.Time) *error {
+func (l QWeeklyLine) RunLine(toDt time.Time) *error {
 	defer l.CloseAllDb()
-	err := l.handler.FetchAndSaveWeekliesFromRemoteToLocal(l.branchIndex, nil, &toDt)
+	err := l.handler.FetchAndSaveQWeekliesFromRemoteToLocal(l.branchIndex, nil, &toDt)
 	if err != nil {
 		return err
 	}
@@ -37,9 +37,9 @@ func (l BDashboardLine) RunLine(toDt time.Time) *error {
 	return nil
 }
 
-func NewBDashboardLine(index int) (*BDashboardLine, *error) {
+func NewQWeeklyLine(index int) (*QWeeklyLine, *error) {
 
-	//var remoteDB *sql.DB = nil
+	var remoteDB *sql.DB = nil
 	remoteDB, err := remote.Open(index)
 	if err != nil {
 		color.Red("error connecting to remote DB")
@@ -51,23 +51,24 @@ func NewBDashboardLine(index int) (*BDashboardLine, *error) {
 		return nil, err
 	}
 
-	h := handlers.WeeklyHandler{
-		Service: service.NewWeeklyService(
-			weekly.NewWeeklyLocalRepositoryDb(localDb),
-			weekly.NewWeeklyRemoteRepositoryDb(remoteDB),
-			//domains.NewWeeklyRemoteRepositoryStub(),
-			),
+	h := handlers.QWeeklyHandler{
+		Service: service.NewQWeeklyService(
+			Qweekly.NewQWeeklyLocalRepositoryDb(localDb),
+			//Qweekly.NewQWeeklyRemoteRepositoryStub(),
+			Qweekly.NewQWeeklyRemoteRepositoryDb(remoteDB),
+		),
 	}
-	return &BDashboardLine{
+	return &QWeeklyLine{
 		handler: h,
 		branchIndex: index,
 		remoteDb: remoteDB,
+		//remoteDb: nil,
 		localDB: localDb,
 	}, nil
 }
 
-func RunBDashboardLine(index int) {
-	ln, err := NewBDashboardLine(index)
+func RunQWeeklyLine(index int) {
+	ln, err := NewQWeeklyLine(index)
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error creating communication line for remoteDB Branch index `%v` and localDB", index))
 		return

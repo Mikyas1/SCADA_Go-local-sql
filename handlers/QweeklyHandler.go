@@ -10,18 +10,18 @@ import (
 	"github.com/fatih/color"
 )
 
-type WeeklyHandler struct {
-	Service service.DefaultWeeklyService
+type QWeeklyHandler struct {
+	Service service.DefaultQWeeklyService
 }
 
-func (h *WeeklyHandler) FetchAndSaveWeekliesFromRemoteToLocal(branchIndex int, dtFrom, dtTo *time.Time) *error {
+func (h *QWeeklyHandler) FetchAndSaveQWeekliesFromRemoteToLocal(branchIndex int, dtFrom, dtTo *time.Time) *error {
 	var startDateTime *time.Time
 
-	lastWeekly, err := h.Service.GetLatestWeekly(branchIndex)
+	lastQWeekly, err := h.Service.GetLatestQWeekly(branchIndex)
 	if err != nil {
 		if strings.Contains(fmt.Sprintf("%s", *err), "converting NULL to string is unsupported") {
 
-			color.Red(fmt.Sprintf("X Error when trying to scan latest weekly, LOCAL DB might be empty for `%v` Branch Index", branchIndex))
+			color.Red(fmt.Sprintf("X Error when trying to scan latest Qweekly, LOCAL DB might be empty for `%v` Branch Index", branchIndex))
 			color.Blue("--> Setting start date and time to the BEGINNING OF THE YEAR")
 
 			// TODO set start date to beginning
@@ -31,13 +31,13 @@ func (h *WeeklyHandler) FetchAndSaveWeekliesFromRemoteToLocal(branchIndex int, d
 			return err
 		}
 	} else {
-		startDateTime = &lastWeekly.FinalDateTime
+		startDateTime = &lastQWeekly.ProcessTime
 	}
 
 	startDateTime, _ = dateTime.ChangeDateTimeMinToFactorWrapper(startDateTime, interval, true)
 	dtTo, _ = dateTime.ChangeDateTimeMinToFactorWrapper(dtTo, interval, false)
 
-	err = h.Service.GetWeekliesAndSave(*startDateTime, *dtTo, interval, branchIndex)
+	err = h.Service.GetQWeekliesAndSave(*startDateTime, *dtTo, interval, branchIndex)
 	if err != nil {
 		return err
 	}

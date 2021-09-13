@@ -1,9 +1,8 @@
-package domains
+package weekly
 
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
@@ -16,19 +15,19 @@ type WeeklyRemoteRepositoryDb struct {
 }
 
 const (
-	str  = "SELECT q.process_id, COUNT(q.process_id) AS count FROM event_log as q JOIN system_process_relations AS a ON q.process_id = a.process_id"
-	str1 = "GROUP BY q.process_id, DATE_FORMAT(process_date, '%Y-%m-%d') ORDER BY DATE_FORMAT(process_date, '%Y-%m-%d'), q.process_id"
+	weeklyStr  = "SELECT q.process_id, COUNT(q.process_id) AS count FROM event_log as q JOIN system_process_relations AS a ON q.process_id = a.process_id"
+	weeklyStr1 = "GROUP BY q.process_id, DATE_FORMAT(process_date, '%Y-%m-%d') ORDER BY DATE_FORMAT(process_date, '%Y-%m-%d'), q.process_id"
 )
 
 func (s WeeklyRemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*Weekly, *error) {
 	var query string
 
 	query = fmt.Sprintf("%s WHERE process_date > '%s' AND process_date <= '%s' AND q.is_sortout = 0 %s AND q.process_id = 9 ",
-		str, dtFrom.Format(dateTime.Layout1), dtTo.Format(dateTime.Layout1), str1)
+		weeklyStr, dtFrom.Format(dateTime.Layout1), dtTo.Format(dateTime.Layout1), weeklyStr1)
 
 	selDB, err := s.client.Query(query)
 	if err != nil {
-		log.Panic(err)
+		return nil, &err
 	}
 
 	weekly := Weekly{FinalDateTime: dtTo}
