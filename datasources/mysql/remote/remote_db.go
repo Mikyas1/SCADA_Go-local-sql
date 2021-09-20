@@ -57,3 +57,11 @@ func Open(index int) (*sql.DB, *error) {
 	color.Green(fmt.Sprintf("Successfully connected to remoteDB with index of %v", index))
 	return db, nil
 }
+
+func Use23(index int) bool {
+	return servers[index].Use23
+}
+
+func TotalBranches() int {
+	return len(servers)
+}

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
-	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
 	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qweekly"
 	"github.com/Mikyas1/SCADA_Go-local-sql/handlers"
 	"github.com/Mikyas1/SCADA_Go-local-sql/service"
@@ -40,11 +39,11 @@ func (l QWeeklyLine) RunLine(toDt time.Time) *error {
 func NewQWeeklyLine(index int) (*QWeeklyLine, *error) {
 
 	var remoteDB *sql.DB = nil
-	remoteDB, err := remote.Open(index)
-	if err != nil {
-		color.Red("error connecting to remote DB")
-		return nil, err
-	}
+	//remoteDB, err := remote.Open(index)
+	//if err != nil {
+	//	color.Red("error connecting to remote DB")
+	//	return nil, err
+	//}
 
 	localDb, err := local.Open()
 	if err != nil {
@@ -54,15 +53,14 @@ func NewQWeeklyLine(index int) (*QWeeklyLine, *error) {
 	h := handlers.QWeeklyHandler{
 		Service: service.NewQWeeklyService(
 			Qweekly.NewQWeeklyLocalRepositoryDb(localDb),
-			//Qweekly.NewQWeeklyRemoteRepositoryStub(),
-			Qweekly.NewQWeeklyRemoteRepositoryDb(remoteDB),
+			Qweekly.NewQWeeklyRemoteRepositoryStub(),
+			//Qweekly.NewQWeeklyRemoteRepositoryDb(remoteDB),
 		),
 	}
 	return &QWeeklyLine{
 		handler: h,
 		branchIndex: index,
 		remoteDb: remoteDB,
-		//remoteDb: nil,
 		localDB: localDb,
 	}, nil
 }

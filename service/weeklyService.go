@@ -15,8 +15,8 @@ type WeeklyService interface {
 
 
 type DefaultWeeklyService struct {
-	localRepo  weekly.WeeklyLocalRepository
-	remoteRepo weekly.WeeklyRemoteRepository
+	localRepo  weekly.LocalRepository
+	remoteRepo weekly.RemoteRepository
 }
 
 func (s DefaultWeeklyService) SaveWeekly(weekly weekly.Weekly, branchIndex int) *error {
@@ -61,7 +61,7 @@ func (s DefaultWeeklyService) GetLatestWeekly(branchIndex int) (*weekly.Weekly, 
 	return weekly, nil
 }
 
-func NewWeeklyService(localRepo weekly.WeeklyLocalRepository, remoteRepo weekly.WeeklyRemoteRepository) DefaultWeeklyService {
+func NewWeeklyService(localRepo weekly.LocalRepository, remoteRepo weekly.RemoteRepository) DefaultWeeklyService {
 	return DefaultWeeklyService{
 		localRepo: localRepo,
 		remoteRepo: remoteRepo,

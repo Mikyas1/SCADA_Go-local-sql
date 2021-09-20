@@ -7,6 +7,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: M2
     speed: 50
     filling: 29
@@ -15,6 +16,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: M3
     speed: 50
     filling: 29
@@ -23,6 +25,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: Q1
     speed: 50
     filling: 29
@@ -31,6 +34,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: Q2
     speed: 50
     filling: 29
@@ -39,6 +43,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: Q3
     speed: 50
     filling: 29
@@ -47,6 +52,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: D1
     speed: 50
     filling: 29
@@ -55,6 +61,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: D2
     speed: 50
     filling: 29
@@ -63,6 +70,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: D3
     speed: 50
     filling: 29
@@ -71,6 +79,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: D4
     speed: 50
     filling: 29
@@ -79,6 +88,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: T1
     speed: 50
     filling: 29
@@ -87,6 +97,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: T2
     speed: 50
     filling: 29
@@ -95,6 +106,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: T3
     speed: 50
     filling: 29
@@ -103,6 +115,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: J1
     speed: 50
     filling: 29
@@ -111,6 +124,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: J2
     speed: 50
     filling: 25
@@ -119,6 +133,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: J3
     speed: 50
     filling: 29
@@ -127,6 +142,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: J4
     speed: 50
     filling: 29
@@ -135,6 +151,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: J5
     speed: 50
     filling: 29
@@ -143,6 +160,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: J6
     speed: 50
     filling: 29
@@ -151,6 +169,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: A1
     speed: 50
     filling: 29
@@ -159,6 +178,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: A2
     speed: 50
     filling: 29
@@ -167,6 +187,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: A3
     speed: 50
     filling: 29
@@ -175,6 +196,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: A4
     speed: 50
     filling: 29
@@ -183,6 +205,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: R1
     speed: 60
     filling: 60
@@ -191,6 +214,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: true
   - site: R2
     speed: 60
     filling: 60
@@ -199,6 +223,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: true
   - site: R3
     speed: 60
     filling: 60
@@ -207,6 +232,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: true
   - site: R4
     speed: 50
     filling: 29
@@ -215,6 +241,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: R5
     speed: 60
     filling: 60
@@ -223,6 +250,7 @@ database:
     user: root
     password: filling
     name: ccc
+    use23: false
   - site: Air Compressor
     speed: 50
     filling: 29
@@ -231,3 +259,4 @@ database:
     user: root
     password: 123456
     name: ras2021
+    use23: false

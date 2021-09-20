@@ -32,5 +32,5 @@ type LocalRepository interface {
 }
 
 type RemoteRepository interface {
-	FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*QWeekly, *error)
+	FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) ([]*QWeekly, *error)
 }

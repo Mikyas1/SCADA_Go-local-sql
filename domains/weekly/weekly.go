@@ -7,11 +7,11 @@ type Weekly struct {
 	FinalDateTime time.Time `json:"final_date_time"`
 }
 
-type WeeklyLocalRepository interface {
+type LocalRepository interface {
 	Save(weekly Weekly, branchIndex int) *error
 	GetLatestWeekly(branchIndex int) (*Weekly, *error)
 }
 
-type WeeklyRemoteRepository interface {
+type RemoteRepository interface {
 	FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*Weekly, *error)
 }

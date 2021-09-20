@@ -9,6 +9,7 @@ type Server struct {
 	User     string `yaml:"user"`
 	Password string `yaml:"password"`
 	Name     string `yaml:"name"`
+	Use23    bool   `yaml:"use23"`
 }
 
 type Config struct {

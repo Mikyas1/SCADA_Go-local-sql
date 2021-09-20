@@ -27,7 +27,7 @@ func (r qWeeklyLocalRepositoryDb) Save(w QWeekly, branchIndex int) *error {
 	defer stmt.Close()
 	_, saveErr := stmt.Exec(w.Count, w.ProcessTime, w.Namem, w.getProcessId(), w.getCylinderType())
 	if saveErr != nil {
-		color.Red(fmt.Sprintf("QL ERROR: error when trying to run save QWeekly statement for index `%v`", branchIndex))
+		color.Red(fmt.Sprintf("SQL ERROR: error when trying to run save QWeekly statement for index `%v`", branchIndex))
 		return &saveErr
 	}
 	return nil

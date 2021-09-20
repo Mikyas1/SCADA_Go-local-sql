@@ -16,7 +16,7 @@ type RemoteRepositoryDb struct {
 
 const (
 	str  = "SELECT q.process_id, COUNT(q.process_id) AS count, a.comment as namem, q.cyl_type FROM event_log as q JOIN system_process_relations AS a ON q.process_id = a.process_id"
-	str1 = "GROUP BY q.process_id, DATE_FORMAT(process_date, '%Y-%m-%d') ORDER BY DATE_FORMAT(process_date, '%Y-%m-%d'), q.process_id"
+	str1 = "GROUP BY q.process_id, DATE_FORMAT(process_date, '%Y-%m-%d'), q.cyl_type ORDER BY DATE_FORMAT(process_date, '%Y-%m-%d'), q.process_id"
 )
 
 func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*QWeekly, *error) {

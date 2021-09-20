@@ -9,9 +9,8 @@ import (
 	"github.com/fatih/color"
 )
 
-type WeeklyRemoteRepositoryDb struct {
+type RemoteRepositoryDb struct {
 	client   *sql.DB
-	weeklies []Weekly
 }
 
 const (
@@ -19,7 +18,7 @@ const (
 	weeklyStr1 = "GROUP BY q.process_id, DATE_FORMAT(process_date, '%Y-%m-%d') ORDER BY DATE_FORMAT(process_date, '%Y-%m-%d'), q.process_id"
 )
 
-func (s WeeklyRemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*Weekly, *error) {
+func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*Weekly, *error) {
 	var query string
 
 	query = fmt.Sprintf("%s WHERE process_date > '%s' AND process_date <= '%s' AND q.is_sortout = 0 %s AND q.process_id = 9 ",
@@ -46,8 +45,8 @@ func (s WeeklyRemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dt
 	return &weekly, nil
 }
 
-func NewWeeklyRemoteRepositoryDb(client *sql.DB) WeeklyRemoteRepositoryDb {
-	return WeeklyRemoteRepositoryDb{
+func NewWeeklyRemoteRepositoryDb(client *sql.DB) RemoteRepositoryDb {
+	return RemoteRepositoryDb{
 		client: client,
 	}
 }

@@ -3,25 +3,19 @@ package local
 import (
 	"database/sql"
 	"fmt"
+	"github.com/Mikyas1/SCADA_Go-local-sql/app/env"
 
 	"github.com/fatih/color"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var (
-	username = "root"
-	password = "filling"
-	host     = "localhost"
-	schema   = "SCADA_MASTER"
-)
-
 // Open database connection
 func Open() (*sql.DB, *error) {
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
-		username,
-		password,
-		host,
-		schema)
+		env.DbUserName,
+		env.DbPassword,
+		env.DbHost,
+		env.DbName)
 
 	Client, err := sql.Open("mysql", dataSourceName)
 	if err != nil {

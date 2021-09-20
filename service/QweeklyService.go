@@ -33,19 +33,23 @@ func (s DefaultQWeeklyService) GetQWeekliesAndSave(dtFrom, dtTo time.Time, inter
 
 	for tempFrom.Before(dtTo) {
 		tempFormAfterInterval := tempFrom.Add(time.Minute * time.Duration(interval))
-		weekly, err := s.remoteRepo.FindByTimeInterval(branchIndex, tempFrom, tempFormAfterInterval)
+		qWeeklies, err := s.remoteRepo.FindByTimeInterval(branchIndex, tempFrom, tempFormAfterInterval)
 		if err != nil {
 			color.Red(fmt.Sprintf("SERVICE ERROR: error happend when getting Qweekly from REMOTE DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
 			return err
 		}
 
-		err = s.SaveQWeekly(*weekly, branchIndex)
-		if err != nil {
-			color.Red(fmt.Sprintf("SERVICE ERROR: error happend when saving QWeekly to LOCAL DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
-			return err
-		}
+		for _, weekly := range qWeeklies {
 
-		color.Green(fmt.Sprintf("Successfully copied QWeekly data from REMOTE DB to LOCAL DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
+			err = s.SaveQWeekly(*weekly, branchIndex)
+			if err != nil {
+				color.Red(fmt.Sprintf("SERVICE ERROR: error happend when saving QWeekly to LOCAL DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
+				return err
+			}
+
+			color.Green(fmt.Sprintf("Successfully copied QWeekly data from REMOTE DB to LOCAL DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
+
+		}
 
 		tempFrom = tempFormAfterInterval
 	}

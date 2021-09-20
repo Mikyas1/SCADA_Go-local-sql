@@ -2,19 +2,23 @@ package app
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/Mikyas1/SCADA_Go-local-sql/lines"
+	"time"
 
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 )
 
 func Start() {
 
-	go lines.RunQWeeklyLine(5)
+	//go lines.RunQWeeklyLine(5)
 	// go lines.RunBDashboardLine(5)
+	go lines.RunQSearchLine(1)
 
 	fmt.Scanln()
+
+	//if err := local.SetUpTables(); err != nil {
+	//	panic(err)
+	//}
 
 }
 
