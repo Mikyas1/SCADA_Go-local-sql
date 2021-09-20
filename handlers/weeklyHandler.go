@@ -26,7 +26,7 @@ func (h *WeeklyHandler) FetchAndSaveWeekliesFromRemoteToLocal(branchIndex int, d
 
 			// TODO set start date to beginning
 			//startDateTime, _ = dateTime.ParseDateTimeFromString(dateTime.Layout1, "2021-01-01 00:00:00")
-			startDateTime, _ = dateTime.GetOnlyDateFormDateTime(time.Now().AddDate(0, 0, -2)) // this two days before today
+			startDateTime, _ = dateTime.GetOnlyDateFormDateTime(time.Now().AddDate(0, 0, -4)) // this two days before today
 		} else {
 			return err
 		}

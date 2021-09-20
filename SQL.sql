@@ -11,20 +11,20 @@ create unique index table_name_final_datetime_uindex
 	on table_name (final_datetime);
 
 -- ===================================================
-create table BDashboard_2
+create table BDashboard_3
 (
     count int default 0 not null,
     final_datetime datetime not null,
     id int auto_increment,
-    constraint BDashboard_2_pk
+    constraint BDashboard_3_pk
         primary key (id)
 );
 
-create unique index BDashboard_2_final_datetime_uindex
-    on BDashboard_1 (final_datetime);
+create unique index BDashboard_3_final_datetime_uindex
+    on BDashboard_3 (final_datetime);
 
 -- ===================================================
-create table QWeekly_5
+create table QWeekly_3
 (
     id int auto_increment,
     process_time datetime not null,
@@ -32,7 +32,7 @@ create table QWeekly_5
     process_id int null,
     count int not null,
     cyl_type int null,
-    constraint QWeekly_5_pk
+    constraint QWeekly_3_pk
         primary key (id)
 );
 

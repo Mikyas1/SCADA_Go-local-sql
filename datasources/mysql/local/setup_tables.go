@@ -3,6 +3,7 @@ package local
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
 	"github.com/fatih/color"
 )
@@ -10,8 +11,8 @@ import (
 const (
 	createBDashboardTable = "create table IF NOT EXISTS BDashboard_%d (count int default 0 not null, final_datetime datetime not null, id int auto_increment, constraint BDashboard_2_pk primary key (id));"
 	createBDashboardIndex = "create unique index IF NOT EXISTS BDashboard_%d_final_datetime_uindex on BDashboard_%d (final_datetime);"
-	createQWeeklyTable = "create table IF NOT EXISTS QWeekly_%d (id int auto_increment, process_time datetime not null, namem varchar(50) not null, process_id int null, count int not null, cyl_type int null, constraint QWeekly_%d_pk primary key (id));"
-	createQSearchTable = "create table IF NOT EXISTS QSearch_%d (id int auto_increment, count int not null, sort_out int not null, plat_input int not null, process_id int not null, namem varchar(50) not null, count_by_machine_1 int not null, count_by_machine_2 int not null, count_by_machine_3 int not null, process_time datetime not null, cyl_type int null, constraint QSearch_%d_pk primary key (id));"
+	createQWeeklyTable    = "create table IF NOT EXISTS QWeekly_%d (id int auto_increment, process_time datetime not null, namem varchar(50) not null, process_id int null, count int not null, cyl_type int null, constraint QWeekly_%d_pk primary key (id));"
+	createQSearchTable    = "create table IF NOT EXISTS QSearch_%d (id int auto_increment, count int not null, sort_out int not null, plat_input int not null, process_id int not null, namem varchar(50) not null, count_by_machine_1 int not null, count_by_machine_2 int not null, count_by_machine_3 int not null, process_time datetime not null, cyl_type int null, constraint QSearch_%d_pk primary key (id));"
 )
 
 func SetUpTables() error {

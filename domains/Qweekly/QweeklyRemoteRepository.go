@@ -19,7 +19,7 @@ const (
 	str1 = "GROUP BY q.process_id, DATE_FORMAT(process_date, '%Y-%m-%d'), q.cyl_type ORDER BY DATE_FORMAT(process_date, '%Y-%m-%d'), q.process_id"
 )
 
-func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*QWeekly, *error) {
+func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) ([]*QWeekly, *error) {
 	var query string
 
 	query = fmt.Sprintf("%s WHERE process_date > '%s' AND process_date <= '%s' AND q.is_sortout = 0 %s ",
@@ -30,8 +30,9 @@ func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo tim
 		return nil, &err
 	}
 
-	qWeekly := QWeekly{ProcessTime: dtTo}
+	var qWeeklies []*QWeekly
 	for selDB.Next() {
+		qWeekly := QWeekly{ProcessTime: dtTo}
 		var processId int
 		var count int
 		var namem string
@@ -44,9 +45,10 @@ func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo tim
 		qWeekly.Count = count
 		qWeekly.Namem = namem
 		qWeekly.CylinderType = cylinderType
+		qWeeklies = append(qWeeklies, &qWeekly)
 	}
 
-	return &qWeekly, nil
+	return qWeeklies, nil
 }
 
 func NewQWeeklyRemoteRepositoryDb(client *sql.DB) RemoteRepositoryDb {
