@@ -18,10 +18,10 @@ const (
 func SetUpTables() error {
 	branches := remote.TotalBranches()
 	db, openErr := Open()
-	defer db.Close()
 	if openErr != nil {
 		return *openErr
 	}
+	defer db.Close()
 
 	for i := 0; i <= branches; i++ {
 

@@ -80,3 +80,11 @@ func RunBDashboardLine(index int) {
 		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
 	}
 }
+
+func RunConcurAllBDashboardBranches(totalBranches int) {
+	for i := 0; i < totalBranches; i++ {
+		color.White(fmt.Sprintf("--> Task created for BDashboard Branch id %d", i))
+		go RunBDashboardLine(totalBranches)
+	}
+	fmt.Scanln()
+}

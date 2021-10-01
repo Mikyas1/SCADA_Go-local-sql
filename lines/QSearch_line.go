@@ -65,11 +65,11 @@ func NewQSearchLine(index int) (*QSearchLine, *error) {
 	}, nil
 }
 
-func RunQSearchLine(index int) {
+func RunQSearchLine(index int) error {
 	ln, err := NewQSearchLine(index)
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error creating communication line for remoteDB Branch index `%v` and localDB", index))
-		return
+		return *err
 	}
 
 	toDt, _ := dateTime.GetYesterday()
@@ -77,5 +77,15 @@ func RunQSearchLine(index int) {
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error running communication line for remoteDB Branch index `%v` and localDB", index))
 		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
+		return *err
+	}
+	return nil
+}
+
+func RunAllQSearchBranches(totalBranches int) {
+	for i := 0; i < totalBranches; i++ {
+		color.White(fmt.Sprintf("--> Task created for QSearch Branch id %d", i))
+		err := RunQSearchLine(totalBranches)
+		if err != nil {}
 	}
 }

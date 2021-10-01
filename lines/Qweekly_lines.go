@@ -81,3 +81,11 @@ func RunQWeeklyLine(index int) {
 		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
 	}
 }
+
+func RunConcurAllQWeeklyBranches(totalBranches int) {
+	for i := 0; i < totalBranches; i++ {
+		color.White(fmt.Sprintf("--> Task created for QWeekly Branch id %d", i))
+		go RunQWeeklyLine(totalBranches)
+	}
+	fmt.Scanln()
+}

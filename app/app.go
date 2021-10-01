@@ -1,21 +1,27 @@
 package app
 
 import (
-	"fmt"
-	"time"
-
+	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
 	"github.com/Mikyas1/SCADA_Go-local-sql/lines"
-
-	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
+	"github.com/fatih/color"
+	"github.com/urfave/cli"
+	"os"
 )
 
 func Start() {
 
-	go lines.RunQWeeklyLine(3)
+	app := cli.NewApp()
+
+	_ = setUpApp(app)
+
+	_ = app.Run(os.Args)
+
+	//lines.RunConcurAllQWeeklyBranches(28)
+	//go lines.RunQWeeklyLine(3)
 	// go lines.RunBDashboardLine(3)
 	// go lines.RunQSearchLine(1)
 
-	fmt.Scanln()
+	//fmt.Scanln()
 
 	// if err := local.SetUpTables(); err != nil {
 	// 	panic(err)
@@ -23,9 +29,55 @@ func Start() {
 
 }
 
-func StartTwo() {
-	//dt, _ := dateTime.ParseDateTimeFromString(dateTime.Layout1, "2021-01-01 00:00:00")
-	dt := time.Now()
-	newDt, _ := dateTime.ChangeDateTimeMinToFactorWrapper(&dt, 5, true)
-	fmt.Println(newDt)
+func setUpApp(app *cli.App) error {
+	app.Name = "SCADA db loader"
+	app.Usage = "This app is intended for loading slave db data to master db for SCADA"
+	app.Version = "0.1"
+
+	app.Commands = []cli.Command{
+		{
+			Name:    "bdashboard",
+			Aliases: []string{"bd"},
+			Usage:   "run `bdashboard` for all 28 branches, get data from respective dbs and store to local",
+			Action: func(c *cli.Context) error {
+				color.HiGreen("* Batch execution `started` for BDashboard")
+				lines.RunConcurAllBDashboardBranches(28)
+				return nil
+			},
+		},
+		{
+			Name:    "qweekly",
+			Aliases: []string{"qw"},
+			Usage:   "run `qweekly` for all 28 branches, get data from respective dbs and store to local",
+			Action: func(c *cli.Context) error {
+				color.HiGreen("* Batch execution `started` for QWeekly")
+				lines.RunConcurAllQWeeklyBranches(28)
+				return nil
+			},
+		},
+		{
+			Name:    "qsearch",
+			Aliases: []string{"qs"},
+			Usage:   "run `qsearch` for all 28 branches, get data from respective dbs and store to local",
+			Action: func(c *cli.Context) error {
+				color.HiGreen("* Batch execution not concurrent `started` for QSearch")
+				lines.RunAllQSearchBranches(28)
+				return nil
+			},
+		},
+		{
+			Name:    "setup",
+			Aliases: []string{"s"},
+			Usage:   "run `setup` to create all necessary tables on local (Master) DB.",
+			Action: func(c *cli.Context) error {
+				color.HiGreen("* setting up or creating necessary tables on local (Master) DB.")
+				if err := local.SetUpTables(); err != nil {
+					return err
+				}
+				return nil
+			},
+		},
+	}
+
+	return nil
 }
