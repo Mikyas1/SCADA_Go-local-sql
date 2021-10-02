@@ -4,7 +4,7 @@ import "time"
 
 type Weekly struct {
 	Count         int       `json:"count"`
-	FinalDateTime time.Time `json:"final_date_time"`
+	FinalDateTime time.Time `json:"final_datetime"`
 }
 
 type LocalRepository interface {

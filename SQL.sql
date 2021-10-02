@@ -63,3 +63,50 @@ create table QSearch_1
 select process_id, SUM(count) as count, SUM(plat_input) as plat_input, SUM(sort_out) as sort_out, SUM(count_by_machine_1) as cbm1, SUM(count_by_machine_2) as cbm2, SUM(count_by_machine_3) as cbm3, namem from QSearch_1 WHERE process_time >= '2021-09-19 00:00:00' AND process_time <= '2021-09-20 00:00:00' AND cyl_type IN (1,2) GROUP BY process_id;
 
 -- ====================================================
+
+create table QDashboard_1
+(
+    residual int not null,
+    check_net int not null,
+    count int not null,
+    final_datetime datetime not null
+);
+
+create unique index QDashboard_1_final_datetime_uindex
+    on QDashboard_1 (final_datetime);
+
+
+-- =====================================================
+
+
+create table QReport_1
+(
+    machine_id varchar(20) not null,
+    process_date varchar(25) not null,
+    gtem400 int null,
+    gtem350 int null,
+    gtem300 int null,
+    gtem250 int null,
+    gtem200 int null,
+    gtem150 int null,
+    gtem100 int null,
+    gtem050 int null,
+    value int null,
+    gte050 int null,
+    gte100 int null,
+    gte150 int null,
+    gte200 int null,
+    gte250 int null,
+    gte300 int null,
+    gte350 int null,
+    gte400 int null,
+    sum int null,
+    m200x200 int null,
+    diff int null,
+    start_point float null,
+    accuracy float null,
+    cylinder_type int null,
+    final_datetime datetime null
+);
+
+-- ===================================================================================

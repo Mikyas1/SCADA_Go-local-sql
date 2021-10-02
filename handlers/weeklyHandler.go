@@ -25,7 +25,7 @@ func (h *WeeklyHandler) FetchAndSaveWeekliesFromRemoteToLocal(branchIndex int, d
 			color.Blue("--> Setting start date and time to the BEGINNING OF THE YEAR")
 
 			// TODO set start date to beginning
-			//startDateTime, _ = dateTime.ParseDateTimeFromString(dateTime.Layout1, "2021-01-01 00:00:00")
+			//startDateTime, _ = dateTime.ParseDateTimeFromString(dateTime.Layout1, startDate)
 			startDateTime, _ = dateTime.GetOnlyDateFormDateTime(time.Now().AddDate(0, 0, -4)) // this two days before today
 		} else {
 			return err

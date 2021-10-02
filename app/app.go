@@ -77,6 +77,26 @@ func setUpApp(app *cli.App) error {
 				return nil
 			},
 		},
+		{
+			Name:    "qdashboard",
+			Aliases: []string{"qd"},
+			Usage:   "run `qdashboard` for all 28 branches, get data from respective dbs and store to local",
+			Action: func(c *cli.Context) error {
+				color.HiGreen("* Batch execution `started` for QDashboard")
+				lines.RunConcurAllQDashboardBranches(28)
+				return nil
+			},
+		},
+		{
+			Name:    "qreport",
+			Aliases: []string{"qr"},
+			Usage:   "run `qreport` for all 28 branches, get data from respective dbs and store to local",
+			Action: func(c *cli.Context) error {
+				color.HiGreen("* Batch execution `started` for QReport")
+				lines.RunConcurAllQReportBranches(28)
+				return nil
+			},
+		},
 	}
 
 	return nil
