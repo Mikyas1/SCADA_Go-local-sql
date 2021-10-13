@@ -3,10 +3,11 @@ package Qreport
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
-	"github.com/fatih/color"
 	"strconv"
 	"time"
+
+	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
+	"github.com/fatih/color"
 )
 
 type RemoteRepositoryDb struct {
@@ -45,8 +46,10 @@ func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex, processId, filling i
 	var results []QReport
 	var query string
 	checkNets := []int{10600, 10650, 10700, 10750, 10800, 10850, 10900, 10950, 11000, 11050, 11100, 11150, 11200, 11250, 11300, 11350, 11400}
-	var resCyl map[int][17]int
+	resCyl := map[int][17]int{}
 	for i := 0; i < 17; i++ {
+		color.Green("========================================== got here ====================")
+		color.Green("running the 17 loops")
 		if i == 0 {
 			query = fmt.Sprintf(query1, machineId, checkNets[i], dtFrom.Format(dateTime.Layout1), dtTo.Format(dateTime.Layout1), processId)
 		} else if i == 16 {
@@ -56,15 +59,17 @@ func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex, processId, filling i
 		}
 		res, err := s.client.Query(query)
 		if err != nil {
+			color.Red(fmt.Sprintf("SQL ERROR: %s.", err.Error()))
 			return nil, &err
 		}
 		for res.Next() {
 			var count int
 			var cylType int
 			//err := res.Scan(&n[i])
-			err := res.Scan(&count, cylType)
+			err := res.Scan(&count, &cylType)
 			if err != nil {
-				color.Red("error when trying to scan remote QReport.")
+				fmt.Println(fmt.Sprintf("%s", err.Error()))
+				color.Red("SQL ERROR: error when trying to scan remote QReport.")
 				return nil, &err
 			}
 			// get if exists cylType int array from map
@@ -101,31 +106,31 @@ func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex, processId, filling i
 		diff := sum - m200X200
 
 		results = append(results, QReport{
-			MachineId:   machineId,
-			ProcessDate: dateString,
-			Gtem400:     gtem400,
-			Gtem350:     gtem350,
-			Gtem300:     gtem300,
-			Gtem250:     gtem250,
-			Gtem200:     gtem200,
-			Gtem150:     gtem150,
-			Gtem100:     gtem100,
-			Gtem050:     gtem050,
-			Value:       Cvalue,
-			Gte050:      gte050,
-			Gte100:      gte100,
-			Gte150:      gte150,
-			Gte200:      gte200,
-			Gte250:      gte250,
-			Gte300:      gte300,
-			Gte350:      gte350,
-			Gte400:      gte400,
-			Sum:         sum,
-			M200X200:    m200X200,
-			Diff:        diff,
-			StartPoint:  0.0,
-			Accuracy:    0.0,
-			CylinderType: cylType,
+			MachineId:     machineId,
+			ProcessDate:   dateString,
+			Gtem400:       gtem400,
+			Gtem350:       gtem350,
+			Gtem300:       gtem300,
+			Gtem250:       gtem250,
+			Gtem200:       gtem200,
+			Gtem150:       gtem150,
+			Gtem100:       gtem100,
+			Gtem050:       gtem050,
+			Value:         Cvalue,
+			Gte050:        gte050,
+			Gte100:        gte100,
+			Gte150:        gte150,
+			Gte200:        gte200,
+			Gte250:        gte250,
+			Gte300:        gte300,
+			Gte350:        gte350,
+			Gte400:        gte400,
+			Sum:           sum,
+			M200X200:      m200X200,
+			Diff:          diff,
+			StartPoint:    0.0,
+			Accuracy:      0.0,
+			CylinderType:  cylType,
 			FinalDateTime: dtTo,
 		})
 	}
@@ -157,5 +162,11 @@ func mutateCylTypeQReports(data map[int][17]int, count, i, cylType int) {
 		var inits [17]int
 		inits[i] = count
 		data[cylType] = inits
+	}
+}
+
+func NewRemoteRepositoryDb(client *sql.DB) RemoteRepository {
+	return RemoteRepositoryDb{
+		client: client,
 	}
 }

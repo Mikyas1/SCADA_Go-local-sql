@@ -3,13 +3,15 @@ package lines
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
+	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
 	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qreport"
 	"github.com/Mikyas1/SCADA_Go-local-sql/handlers"
 	"github.com/Mikyas1/SCADA_Go-local-sql/service"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
-	"time"
 )
 
 type QReportLine struct {
@@ -38,12 +40,12 @@ func (l QReportLine) RunLine(toDt time.Time) *error {
 
 func NewQReportLine(index int) (*QReportLine, *error) {
 
-	var remoteDB *sql.DB = nil
-	//remoteDB, err := remote.Open(index)
-	//if err != nil {
-	//	color.Red("error connecting to remote DB")
-	//	return nil, err
-	//}
+	// var remoteDB *sql.DB = nil
+	remoteDB, err := remote.Open(index)
+	if err != nil {
+		color.Red("error connecting to remote DB")
+		return nil, err
+	}
 
 	localDb, err := local.Open()
 	if err != nil {
@@ -54,7 +56,8 @@ func NewQReportLine(index int) (*QReportLine, *error) {
 		Service: service.NewQReportService(
 			//Qreport.NewQReportLocalRepositoryStub(),
 			Qreport.NewQReportLocalRepositoryDb(localDb),
-			Qreport.NewQReportRemoteRepositoryStub(),
+			Qreport.NewRemoteRepositoryDb(remoteDB),
+			// Qreport.NewQReportRemoteRepositoryStub(),
 		),
 	}
 	return &QReportLine{
@@ -80,12 +83,11 @@ func RunQReportLine(index int) {
 	}
 }
 
-
 func RunConcurAllQReportBranches(totalBranches int) {
 	//for i := 0; i < totalBranches; i++ {
 	//	color.White(fmt.Sprintf("--> Task created for QReport Branch id %d", i))
 	//	go RunQReportLine(totalBranches)
 	//}
 	//fmt.Scanln()
-	RunQReportLine(1)
+	RunQReportLine(3)
 }

@@ -3,8 +3,9 @@ package Qsearch
 import (
 	"database/sql"
 	"fmt"
-	"github.com/fatih/color"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 const (
@@ -31,7 +32,7 @@ func (db RemoteRepositoryDb) FindNamemByProcessId(processId int) (string, *error
 	}
 	defer stmt.Close()
 	var namem string
-	result := stmt.QueryRow()
+	result := stmt.QueryRow(processId)
 	if getErr := result.Scan(&namem); getErr != nil {
 		color.Red(fmt.Sprintf("SQL ERROR: %s", err))
 		return "", &getErr
@@ -110,7 +111,7 @@ func (db RemoteRepositoryDb) FindCountBYMachine(pId, cylType int, dtFrom, dtTo, 
 				err := selDB.Scan(&countByM[index])
 				if err != nil {
 					color.Red(fmt.Sprintf("SQL ERROR: %s", err))
-					return [3]int{-1,-1,-1}, &err
+					return [3]int{-1, -1, -1}, &err
 				}
 			}
 
@@ -118,6 +119,12 @@ func (db RemoteRepositoryDb) FindCountBYMachine(pId, cylType int, dtFrom, dtTo, 
 		return countByM, nil
 
 	} else {
-		return [3]int{-1,-1,-1}, nil
+		return [3]int{-1, -1, -1}, nil
+	}
+}
+
+func NewRemoteRepositoryDb(client *sql.DB) RemoteRepository {
+	return RemoteRepositoryDb{
+		client: client,
 	}
 }

@@ -2,10 +2,11 @@ package service
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
 	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qreport"
 	"github.com/fatih/color"
-	"time"
 )
 
 type QReportService interface {
@@ -18,7 +19,6 @@ type DefaultQReportService struct {
 	localRepo  Qreport.LocalRepository
 	remoteRepo Qreport.RemoteRepository
 }
-
 
 func (s DefaultQReportService) SaveQReports(qReports []Qreport.QReport, branchIndex int) *error {
 	for _, qReport := range qReports {
@@ -39,12 +39,18 @@ func (s DefaultQReportService) GetQReportAndSave(dtFrom, dtTo time.Time, interva
 
 		machineIdes, err := s.GetMachineIds(branchIndex, tempFrom, tempFormAfterInterval)
 		if err != nil {
-				color.Red(fmt.Sprintf("SERVICE ERROR: error happend when getting Machine Ids from REMOTE DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
+			color.Red(fmt.Sprintf("SERVICE ERROR: error happend when getting Machine Ids from REMOTE DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
 			return nil
 		}
 
 		var qReports []Qreport.QReport
+		fmt.Println("len of machine ids")
+		fmt.Println(len(machineIdes))
 		for _, machineId := range machineIdes {
+			color.Red("================================= got herer ======================")
+			color.Red(fmt.Sprintf("caled get Report for machineId: %s", machineId))
+			color.Red("time: %s", tempFrom)
+
 			ress, err := s.GetQReports(branchIndex, machineId, tempFrom, tempFormAfterInterval)
 			if err != nil {
 				color.Red(fmt.Sprintf("SERVICE ERROR: error happend when getting QReport from REMOTE DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
@@ -52,6 +58,11 @@ func (s DefaultQReportService) GetQReportAndSave(dtFrom, dtTo time.Time, interva
 			for _, re := range ress {
 				qReports = append(qReports, re)
 			}
+		}
+
+		for _, d := range qReports {
+			color.Blue("qreports from remote")
+			color.Blue(fmt.Sprintf("%v", d.ProcessDate))
 		}
 
 		err = s.SaveQReports(qReports, branchIndex)
@@ -97,7 +108,7 @@ func (s DefaultQReportService) GetQReports(branchIndex int, machineId string, dt
 
 func NewQReportService(localRepo Qreport.LocalRepository, remoteRepo Qreport.RemoteRepository) QReportService {
 	return DefaultQReportService{
-		localRepo: localRepo,
+		localRepo:  localRepo,
 		remoteRepo: remoteRepo,
 	}
 }

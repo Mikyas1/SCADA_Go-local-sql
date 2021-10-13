@@ -2,11 +2,12 @@ package service
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
 	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qsearch"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
-	"time"
 )
 
 type QSearchService interface {
@@ -36,6 +37,9 @@ func (s DefaultQSearchService) GetQSearchAndSave(dtFrom, dtTo time.Time, interva
 	for tempFrom.Before(dtTo) {
 		tempFormAfterInterval := tempFrom.Add(time.Minute * time.Duration(interval))
 		qSearches, err := s.GetQSearch(branchIndex, tempFrom, tempFormAfterInterval)
+		color.Green("================================== called GetQSearch ==============================")
+		fmt.Println(fmt.Sprintf("day: %s", tempFrom))
+
 		if err != nil {
 			color.Red(fmt.Sprintf("SERVICE ERROR: error happend when getting Qsearch from REMOTE DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
 			return err
@@ -100,11 +104,15 @@ func (s DefaultQSearchService) GetCountByMachine(pId, cylType int, dtFrom, dtTo,
 }
 
 func (s DefaultQSearchService) MemoizedNamemService(pId int) (string, *error) {
-	if s.namem == nil {s.namem = make(map[int]string)}
+	if s.namem == nil {
+		s.namem = make(map[int]string)
+	}
 
 	if s.namem[pId] == "" {
 		val, err := s.GetNamem(pId)
-		if err != nil {return "", err}
+		if err != nil {
+			return "", err
+		}
 		s.namem[pId] = val
 		return val, nil
 	} else {
@@ -120,6 +128,8 @@ func (s DefaultQSearchService) GetQSearch(branchIndex int, dtFrom, dtTo time.Tim
 	isUse23 := s.GetIsUse23(branchIndex)
 
 	for _, pId := range s.GetPIds(branchIndex) {
+		// color.Green("================================== got here ==============================")
+		// fmt.Println(fmt.Sprintf("pid: %d", pId))
 		var tableName = "event_log"
 		if pId == 5 {
 			tableName = "production_log"
@@ -131,6 +141,8 @@ func (s DefaultQSearchService) GetQSearch(branchIndex int, dtFrom, dtTo time.Tim
 			color.Red(fmt.Sprintf("%s", *err))
 			return nil, err
 		}
+		// color.Green("================================== got here ==============================")
+		// fmt.Println(fmt.Sprintf("namem: %s", namem))
 
 		countWithCylTypes, err := s.GetCountWithCylinderType(pId, dtFromStr, dtToStr, tableName)
 		if err != nil {
@@ -138,8 +150,12 @@ func (s DefaultQSearchService) GetQSearch(branchIndex int, dtFrom, dtTo time.Tim
 			color.Red(fmt.Sprintf("%s", *err))
 			return nil, err
 		}
+		// color.Green("================================== got here ==============================")
+		// fmt.Println(fmt.Sprintf("countWithCylType: %d", countWithCylTypes))
 
 		for _, countWithCylType := range countWithCylTypes {
+			color.Green("================================== got data ==============================")
+			fmt.Println(fmt.Sprintf("pid: %d", pId))
 
 			sortOut, err := s.GetSortOut(pId, countWithCylType.CylinderType, dtFromStr, dtToStr, tableName, isUse23)
 			if err != nil {

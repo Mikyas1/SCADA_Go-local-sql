@@ -40,3 +40,5 @@ type RemoteRepository interface {
 	FindByTimeInterval(branchIndex, processId, filling int, machineId string, dtFrom, dtTo time.Time) ([]QReport, *error)
 	GetMachineId(processId int, dtFrom, dtTo time.Time) ([]string, *error)
 }
+
+// func (r QReport)

@@ -2,9 +2,10 @@ package service
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qdashboard"
 	"github.com/fatih/color"
-	"time"
 )
 
 type QDashboardService interface {
@@ -38,6 +39,12 @@ func (s DefaultQDashboardService) GetQDashboardsAndSave(dtFrom, dtTo time.Time, 
 			return err
 		}
 
+		if qDashboard.CheckNet == 0 && qDashboard.Count == 0 && qDashboard.Residual == 0 && !dtFrom.Equal(tempFrom) {
+			color.Green(fmt.Sprintf("Data is 0 so skipping \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
+			tempFrom = tempFormAfterInterval
+			continue
+		}
+
 		err = s.SaveQDashboard(*qDashboard, branchIndex)
 		if err != nil {
 			color.Red(fmt.Sprintf("SERVICE ERROR: error happend when saving qDashboard to LOCAL DB for \n -> `%v` branch index, \n -> `%v` from time \n -> `%v` to time ", branchIndex, tempFrom, tempFormAfterInterval))
@@ -52,7 +59,6 @@ func (s DefaultQDashboardService) GetQDashboardsAndSave(dtFrom, dtTo time.Time, 
 	return nil
 }
 
-
 func (s DefaultQDashboardService) GetLatestQDashboard(branchIndex int) (*Qdashboard.QDashboard, *error) {
 	qDashboard, err := s.localRepo.GetLatestWeekly(branchIndex)
 	if err != nil {
@@ -63,7 +69,7 @@ func (s DefaultQDashboardService) GetLatestQDashboard(branchIndex int) (*Qdashbo
 
 func NewQDashboardService(localRepo Qdashboard.LocalRepository, remoteRepo Qdashboard.RemoteRepository) DefaultQDashboardService {
 	return DefaultQDashboardService{
-		localRepo: localRepo,
+		localRepo:  localRepo,
 		remoteRepo: remoteRepo,
 	}
 }

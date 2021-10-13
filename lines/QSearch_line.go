@@ -3,20 +3,22 @@ package lines
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
+	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
 	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qsearch"
 	"github.com/Mikyas1/SCADA_Go-local-sql/handlers"
 	"github.com/Mikyas1/SCADA_Go-local-sql/service"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
-	"time"
 )
 
 type QSearchLine struct {
 	handler     handlers.QSearchHandler
 	branchIndex int
-	remoteDb	*sql.DB
-	localDB		*sql.DB
+	remoteDb    *sql.DB
+	localDB     *sql.DB
 }
 
 func (l QSearchLine) CloseAllDb() {
@@ -38,12 +40,12 @@ func (l QSearchLine) RunLine(toDt time.Time) *error {
 
 func NewQSearchLine(index int) (*QSearchLine, *error) {
 
-	var remoteDB *sql.DB = nil
-	//remoteDB, err := remote.Open(index)
-	//if err != nil {
-	//	color.Red("error connecting to remote DB")
-	//	return nil, err
-	//}
+	// var remoteDB *sql.DB = nil
+	remoteDB, err := remote.Open(index)
+	if err != nil {
+		color.Red("error connecting to remote DB")
+		return nil, err
+	}
 
 	localDb, err := local.Open()
 	if err != nil {
@@ -53,15 +55,15 @@ func NewQSearchLine(index int) (*QSearchLine, *error) {
 	h := handlers.QSearchHandler{
 		Service: service.NewQSearchService(
 			Qsearch.NewQSearchLocalRepositoryDb(localDb),
-			//Qsearch.NewWeeklyRemoteRepositoryDb(remoteDB),
-			Qsearch.NewQSearchRemoteRepositoryStub(),
+			Qsearch.NewRemoteRepositoryDb(remoteDB),
+			// Qsearch.NewQSearchRemoteRepositoryStub(),
 		),
 	}
 	return &QSearchLine{
-		handler: h,
+		handler:     h,
 		branchIndex: index,
-		remoteDb: remoteDB,
-		localDB: localDb,
+		remoteDb:    remoteDB,
+		localDB:     localDb,
 	}, nil
 }
 
@@ -83,9 +85,11 @@ func RunQSearchLine(index int) error {
 }
 
 func RunAllQSearchBranches(totalBranches int) {
-	for i := 0; i < totalBranches; i++ {
-		color.White(fmt.Sprintf("--> Task created for QSearch Branch id %d", i))
-		err := RunQSearchLine(totalBranches)
-		if err != nil {}
-	}
+	// for i := 0; i < totalBranches; i++ {
+	// 	color.White(fmt.Sprintf("--> Task created for QSearch Branch id %d", i))
+	// 	err := RunQSearchLine(totalBranches)
+	// 	if err != nil {
+	// 	}
+	// }
+	RunQSearchLine(3)
 }

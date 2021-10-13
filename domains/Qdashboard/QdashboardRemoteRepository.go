@@ -3,9 +3,10 @@ package Qdashboard
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
-	"time"
 )
 
 type RemoteRepositoryDb struct {
@@ -13,7 +14,7 @@ type RemoteRepositoryDb struct {
 }
 
 const (
-	qDashboardStr = "SELECT SUM(residual) as residual, SUM(check_net) as check_net, COUNT(process_id) as count from production_log where process_date BETWEEN '%s' AND '%s'"
+	qDashboardStr = "SELECT COALESCE(SUM(residual), 0) as residual, COALESCE(SUM(check_net), 0) as check_net, COUNT(process_id) as count from production_log where process_date > '%s' AND process_date <= '%s'"
 )
 
 func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*QDashboard, *error) {

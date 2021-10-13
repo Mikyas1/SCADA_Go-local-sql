@@ -79,10 +79,10 @@ create unique index QDashboard_1_final_datetime_uindex
 -- =====================================================
 
 
-create table QReport_1
+create table QReport_3
 (
     machine_id varchar(20) not null,
-    process_date varchar(25) not null,
+    process_date varchar(255) not null,
     gtem400 int null,
     gtem350 int null,
     gtem300 int null,

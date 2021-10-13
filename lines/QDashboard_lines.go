@@ -3,20 +3,22 @@ package lines
 import (
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
+	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/remote"
 	"github.com/Mikyas1/SCADA_Go-local-sql/domains/Qdashboard"
 	"github.com/Mikyas1/SCADA_Go-local-sql/handlers"
 	"github.com/Mikyas1/SCADA_Go-local-sql/service"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
-	"time"
 )
 
 type QDashboardLine struct {
 	handler     handlers.QDashboardHandler
 	branchIndex int
-	remoteDb	*sql.DB
-	localDB		*sql.DB
+	remoteDb    *sql.DB
+	localDB     *sql.DB
 }
 
 func (l QDashboardLine) CloseAllDb() {
@@ -38,12 +40,12 @@ func (l QDashboardLine) RunLine(toDt time.Time) *error {
 
 func NewQDashboardLine(index int) (*QDashboardLine, *error) {
 
-	var remoteDB *sql.DB = nil
-	//remoteDB, err := remote.Open(index)
-	//if err != nil {
-	//	color.Red("error connecting to remote DB")
-	//	return nil, err
-	//}
+	// var remoteDB *sql.DB = nil
+	remoteDB, err := remote.Open(index)
+	if err != nil {
+		color.Red("error connecting to remote DB")
+		return nil, err
+	}
 
 	localDb, err := local.Open()
 	if err != nil {
@@ -53,15 +55,15 @@ func NewQDashboardLine(index int) (*QDashboardLine, *error) {
 	h := handlers.QDashboardHandler{
 		Service: service.NewQDashboardService(
 			Qdashboard.NewQDashboardLocalRepositoryDb(localDb),
-			Qdashboard.NewQDashboardRemoteRepositoryStub(),
-			//Qdashboard.NewQDashboardRemoteRepositoryStub(remoteDB),
+			// Qdashboard.NewQDashboardRemoteRepositoryStub(),
+			Qdashboard.NewQDashboardRemoteRepositoryDb(remoteDB),
 		),
 	}
 	return &QDashboardLine{
-		handler: h,
+		handler:     h,
 		branchIndex: index,
-		remoteDb: remoteDB,
-		localDB: localDb,
+		remoteDb:    remoteDB,
+		localDB:     localDb,
 	}, nil
 }
 
@@ -88,5 +90,5 @@ func RunConcurAllQDashboardBranches(totalBranches int) {
 	//	go RunBDashboardLine(totalBranches)
 	//}
 	//fmt.Scanln()
-	RunQDashboardLine(1)
+	RunQDashboardLine(3)
 }
