@@ -65,3 +65,7 @@ func Use23(index int) bool {
 func TotalBranches() int {
 	return len(servers)
 }
+
+func GetFilling(index int) int {
+	return servers[index].Filling
+}

@@ -37,6 +37,6 @@ type LocalRepository interface {
 }
 
 type RemoteRepository interface {
-	FindByTimeInterval(branchIndex int, dtFrom, dtTo time.Time) (*QReport, *error)
-	GetMachineId(value, processId int, dtFrom, dtTo time.Time) ([]string, *error)
+	FindByTimeInterval(branchIndex, processId, filling int, machineId string, dtFrom, dtTo time.Time) ([]QReport, *error)
+	GetMachineId(processId int, dtFrom, dtTo time.Time) ([]string, *error)
 }

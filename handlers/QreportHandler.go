@@ -25,7 +25,7 @@ func (h *QReportHandler) FetchAndSaveQReportsFromRemoteToLocal(branchIndex int, 
 
 			// TODO set start date to beginning
 			//startDateTime, _ = dateTime.ParseDateTimeFromString(dateTime.Layout1, startDate)
-			startDateTime, _ = dateTime.GetOnlyDateFormDateTime(time.Now().AddDate(0, 0, -4)) // this two days before today
+			startDateTime, _ = dateTime.GetOnlyDateFormDateTime(time.Now().AddDate(0, 0, -5)) // this two days before today
 		} else {
 			return err
 		}
@@ -33,10 +33,10 @@ func (h *QReportHandler) FetchAndSaveQReportsFromRemoteToLocal(branchIndex int, 
 		startDateTime = &lastWeekly.FinalDateTime
 	}
 
-	startDateTime, _ = dateTime.ChangeDateTimeMinToFactorWrapper(startDateTime, interval, true)
-	dtTo, _ = dateTime.ChangeDateTimeMinToFactorWrapper(dtTo, interval, false)
+	//startDateTime, _ = dateTime.ChangeDateTimeMinToFactorWrapper(startDateTime, interval, true)
+	dtTo, _ = dateTime.GetOnlyDateFormDateTime(*dtTo)
 
-	err = h.Service.GetQReportAndSave(*startDateTime, *dtTo, interval, branchIndex)
+	err = h.Service.GetQReportAndSave(*startDateTime, *dtTo, dayInterval, branchIndex)
 	if err != nil {
 		return err
 	}
