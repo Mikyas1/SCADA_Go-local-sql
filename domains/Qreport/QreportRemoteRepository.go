@@ -15,10 +15,10 @@ type RemoteRepositoryDb struct {
 }
 
 const (
-	str    = "SELECT distinct Machine_id from production_log where check_net >= %d AND check_net <= %d AND process_date BETWEEN '%s' AND '%s' AND process_id = %d AND cyl_type = 1 GROUP BY machine_id "
-	query1 = "SELECT count(machine_id), cyl_type from production_log where machine_id  = '%v' AND  check_net <= %d AND (process_date BETWEEN '%s' AND  '%s') AND process_id = %d AND (process_status = 0 OR process_status = 1040 OR process_status = 2064) GROUP BY machine_id, cyl_type  "
-	query2 = "SELECT count(machine_id), cyl_type from production_log where machine_id  = '%v' AND  check_net >= %d AND (process_date BETWEEN '%s' AND  '%s') AND process_id = %d AND (process_status = 0 OR process_status = 1040 OR process_status = 2064) GROUP BY machine_id, cyl_type  "
-	query3 = "SELECT count(machine_id), cyl_type from production_log where machine_id = '%v' AND  check_net = %d AND (process_date BETWEEN '%s' AND  '%s') AND process_id = %d AND (process_status = 0 OR process_status = 1040 OR process_status = 2064) GROUP BY machine_id, cyl_type  "
+	str    = "SELECT distinct Machine_id from production_log where check_net >= %d AND check_net <= %d AND process_date > '%s' AND process_date <= '%s' AND process_id = %d AND cyl_type = 1 GROUP BY machine_id "
+	query1 = "SELECT count(machine_id), cyl_type from production_log where machine_id  = '%v' AND  check_net <= %d AND process_date > '%s' AND process_date <= '%s' AND process_id = %d AND (process_status = 0 OR process_status = 1040 OR process_status = 2064) GROUP BY machine_id, cyl_type  "
+	query2 = "SELECT count(machine_id), cyl_type from production_log where machine_id  = '%v' AND  check_net >= %d AND process_date > '%s' AND process_date <= '%s' AND process_id = %d AND (process_status = 0 OR process_status = 1040 OR process_status = 2064) GROUP BY machine_id, cyl_type  "
+	query3 = "SELECT count(machine_id), cyl_type from production_log where machine_id = '%v' AND  check_net = %d AND process_date > '%s' AND process_date <= '%s' AND process_id = %d AND (process_status = 0 OR process_status = 1040 OR process_status = 2064) GROUP BY machine_id, cyl_type  "
 )
 
 func (s RemoteRepositoryDb) GetMachineId(processId int, dtFrom, dtTo time.Time) ([]string, *error) {
@@ -157,10 +157,13 @@ func (s RemoteRepositoryDb) FindByTimeInterval(branchIndex, processId, filling i
 func mutateCylTypeQReports(data map[int][17]int, count, i, cylType int) {
 	val, ok := data[cylType]
 	if ok {
-		val[i] = count
+		color.Green(fmt.Sprintf("val %v", val[i]))
+		color.Green(fmt.Sprintf("val + count %v", val[i]+count))
+		val[i] = val[i] + count
 	} else {
 		var inits [17]int
 		inits[i] = count
+		color.Green(fmt.Sprintf("array %d", inits))
 		data[cylType] = inits
 	}
 }

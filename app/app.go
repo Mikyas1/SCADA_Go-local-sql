@@ -1,11 +1,12 @@
 package app
 
 import (
+	"os"
+
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
 	"github.com/Mikyas1/SCADA_Go-local-sql/lines"
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
-	"os"
 )
 
 func Start() {
@@ -94,6 +95,17 @@ func setUpApp(app *cli.App) error {
 			Action: func(c *cli.Context) error {
 				color.HiGreen("* Batch execution `started` for QReport")
 				lines.RunConcurAllQReportBranches(28)
+				return nil
+			},
+		},
+		{
+			Name:    "all",
+			Aliases: []string{"all"},
+			Usage:   "run all tasks, get data from respective dbs and store to local",
+			Action: func(c *cli.Context) error {
+				color.HiGreen("* Batch execution `started` for All")
+				// lines.RunConcurAllQReportBranches(28)
+				color.HiGreen("runing all")
 				return nil
 			},
 		},

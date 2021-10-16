@@ -10,10 +10,10 @@ import (
 
 const (
 	queryGetNamemByProcessId   = "SELECT comment as namem from system_process_relations WHERE process_id = ?"
-	queryGetCountWithDateRange = "SELECT COUNT(*) as count, q.cyl_type as cylinder_type from %s as q WHERE q.process_id=%d AND (q.process_date BETWEEN '%s' AND '%s' ) GROUP BY q.cyl_type"
-	querySortOut               = "SELECT COUNT(*) as count from %s as q WHERE q.process_id=%d AND (q.process_date BETWEEN '%s' AND '%s' ) AND q.process_status = 16 AND q.cyl_type=%d"
-	queryPlatInput             = "SELECT COUNT(*) as count from %s as q WHERE q.process_id=%d AND (q.process_date BETWEEN '%s' AND '%s' ) AND q.machine_id = 1 AND q.cyl_type=%d"
-	queryCountByMachine        = "SELECT COUNT(*) as count from %s as q WHERE q.process_id=%d AND (q.process_date BETWEEN '%s' AND '%s' ) AND q.machine_id = %d AND q.cyl_type=%d"
+	queryGetCountWithDateRange = "SELECT COUNT(*) as count, q.cyl_type as cylinder_type from %s as q WHERE q.process_id=%d AND process_date > '%s' AND process_date <= '%s' GROUP BY q.cyl_type"
+	querySortOut               = "SELECT COUNT(*) as count from %s as q WHERE q.process_id=%d AND process_date > '%s' AND process_date <= '%s' AND q.process_status = 16 AND q.cyl_type=%d"
+	queryPlatInput             = "SELECT COUNT(*) as count from %s as q WHERE q.process_id=%d AND process_date > '%s' AND process_date <= '%s' AND q.machine_id = 1 AND q.cyl_type=%d"
+	queryCountByMachine        = "SELECT COUNT(*) as count from %s as q WHERE q.process_id=%d AND process_date > '%s' AND process_date <= '%s' AND q.machine_id = %d AND q.cyl_type=%d"
 )
 
 type RemoteRepositoryDb struct {
