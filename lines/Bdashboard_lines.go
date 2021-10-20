@@ -10,6 +10,7 @@ import (
 	"github.com/Mikyas1/SCADA_Go-local-sql/service"
 	"github.com/Mikyas1/SCADA_Go-local-sql/utils/dateTime"
 	"github.com/fatih/color"
+	"sync"
 	"time"
 )
 
@@ -66,7 +67,7 @@ func NewBDashboardLine(index int) (*BDashboardLine, *error) {
 	}, nil
 }
 
-func RunBDashboardLine(index int) {
+func RunBDashboardLine(index int, wg *sync.WaitGroup) {
 	ln, err := NewBDashboardLine(index)
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error creating communication line for remoteDB Branch index `%v` and localDB", index))
@@ -79,12 +80,15 @@ func RunBDashboardLine(index int) {
 		color.Red(fmt.Sprintf("LINE ERROR: error running communication line for remoteDB Branch index `%v` and localDB", index))
 		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
 	}
+	wg.Done()
 }
 
 func RunConcurAllBDashboardBranches(totalBranches int) {
+	var wg sync.WaitGroup
 	for i := 0; i < totalBranches; i++ {
+		wg.Add(1)
 		color.White(fmt.Sprintf("--> Task created for BDashboard Branch id %d", i))
-		go RunBDashboardLine(totalBranches)
+		go RunBDashboardLine(totalBranches, &wg)
 	}
-	fmt.Scanln()
+	wg.Wait()
 }

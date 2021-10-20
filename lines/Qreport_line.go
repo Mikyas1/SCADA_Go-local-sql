@@ -3,6 +3,7 @@ package lines
 import (
 	"database/sql"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
@@ -68,7 +69,7 @@ func NewQReportLine(index int) (*QReportLine, *error) {
 	}, nil
 }
 
-func RunQReportLine(index int) {
+func RunQReportLine(index int, wg *sync.WaitGroup) {
 	ln, err := NewQReportLine(index)
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error creating communication line for remoteDB Branch `QReport` index `%v` and localDB", index))
@@ -81,13 +82,16 @@ func RunQReportLine(index int) {
 		color.Red(fmt.Sprintf("LINE ERROR: error running communication line for remoteDB Branch `QReport` index `%v` and localDB", index))
 		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
 	}
+	wg.Done()
 }
 
 func RunConcurAllQReportBranches(totalBranches int) {
+	var wg sync.WaitGroup
 	//for i := 0; i < totalBranches; i++ {
+	//	wg.Add(1)
 	//	color.White(fmt.Sprintf("--> Task created for QReport Branch id %d", i))
-	//	go RunQReportLine(totalBranches)
+	//	go RunQReportLine(totalBranches, &wg)
 	//}
-	//fmt.Scanln()
-	RunQReportLine(3)
+	//wg.Wait()
+	RunQReportLine(3, &wg)
 }

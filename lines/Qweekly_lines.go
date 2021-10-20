@@ -3,6 +3,7 @@ package lines
 import (
 	"database/sql"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
@@ -67,7 +68,7 @@ func NewQWeeklyLine(index int) (*QWeeklyLine, *error) {
 	}, nil
 }
 
-func RunQWeeklyLine(index int) {
+func RunQWeeklyLine(index int, wg *sync.WaitGroup) {
 	ln, err := NewQWeeklyLine(index)
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error creating communication line for remoteDB Branch index `%v` and localDB", index))
@@ -80,12 +81,15 @@ func RunQWeeklyLine(index int) {
 		color.Red(fmt.Sprintf("LINE ERROR: error running communication line for remoteDB Branch index `%v` and localDB", index))
 		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
 	}
+	wg.Done()
 }
 
 func RunConcurAllQWeeklyBranches(totalBranches int) {
+	var wg sync.WaitGroup
 	for i := 0; i < totalBranches; i++ {
+		wg.Add(1)
 		color.White(fmt.Sprintf("--> Task created for QWeekly Branch id %d", i))
-		go RunQWeeklyLine(totalBranches)
+		go RunQWeeklyLine(totalBranches, &wg)
 	}
-	fmt.Scanln()
+	wg.Wait()
 }

@@ -3,6 +3,7 @@ package lines
 import (
 	"database/sql"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
@@ -67,11 +68,11 @@ func NewQDashboardLine(index int) (*QDashboardLine, *error) {
 	}, nil
 }
 
-func RunQDashboardLine(index int) error {
+func RunQDashboardLine(index int, wg *sync.WaitGroup) {
 	ln, err := NewQDashboardLine(index)
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error creating QDashboard communication line for remoteDB Branch index `%v` and localDB", index))
-		return *err
+		//return *err
 	}
 
 	toDt, _ := dateTime.GetYesterday()
@@ -79,16 +80,19 @@ func RunQDashboardLine(index int) error {
 	if err != nil {
 		color.Red(fmt.Sprintf("LINE ERROR: error running QDashboard communication line for remoteDB Branch index `%v` and localDB", index))
 		color.Red(fmt.Sprintf("LINE ERROR: %s", *err))
-		return *err
+		//return *err
 	}
-	return nil
+	wg.Done()
+	//return nil
 }
 
 func RunConcurAllQDashboardBranches(totalBranches int) {
-	//for i := 0; i < totalBranches; i++ {
-	//	color.White(fmt.Sprintf("--> Task created for QDashboard Branch id %d", i))
-	//	go RunBDashboardLine(totalBranches)
-	//}
-	//fmt.Scanln()
-	RunQDashboardLine(3)
+	var wg sync.WaitGroup
+	for i := 0; i < totalBranches; i++ {
+		wg.Add(1)
+		color.White(fmt.Sprintf("--> Task created for QDashboard Branch id %d", i))
+		go RunQDashboardLine(totalBranches, &wg)
+	}
+	wg.Wait()
+	//RunQDashboardLine(3)
 }

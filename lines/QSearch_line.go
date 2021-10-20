@@ -85,11 +85,10 @@ func RunQSearchLine(index int) error {
 }
 
 func RunAllQSearchBranches(totalBranches int) {
-	// for i := 0; i < totalBranches; i++ {
-	// 	color.White(fmt.Sprintf("--> Task created for QSearch Branch id %d", i))
-	// 	err := RunQSearchLine(totalBranches)
-	// 	if err != nil {
-	// 	}
-	// }
-	RunQSearchLine(3)
+	for i := 0; i < totalBranches; i++ {
+		color.White(fmt.Sprintf("--> Task created for QSearch Branch id %d", i))
+		err := RunQSearchLine(totalBranches)
+		if err != nil {
+		}
+	}
 }

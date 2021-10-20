@@ -2,6 +2,7 @@ package app
 
 import (
 	"os"
+	"time"
 
 	"github.com/Mikyas1/SCADA_Go-local-sql/datasources/mysql/local"
 	"github.com/Mikyas1/SCADA_Go-local-sql/lines"
@@ -16,17 +17,6 @@ func Start() {
 	_ = setUpApp(app)
 
 	_ = app.Run(os.Args)
-
-	//lines.RunConcurAllQWeeklyBranches(28)
-	//go lines.RunQWeeklyLine(3)
-	// go lines.RunBDashboardLine(3)
-	// go lines.RunQSearchLine(1)
-
-	//fmt.Scanln()
-
-	// if err := local.SetUpTables(); err != nil {
-	// 	panic(err)
-	// }
 
 }
 
@@ -103,13 +93,35 @@ func setUpApp(app *cli.App) error {
 			Aliases: []string{"all"},
 			Usage:   "run all tasks, get data from respective dbs and store to local",
 			Action: func(c *cli.Context) error {
-				color.HiGreen("* Batch execution `started` for All")
-				// lines.RunConcurAllQReportBranches(28)
-				color.HiGreen("runing all")
+				color.HiGreen("* Batch execution `started` for All tasks")
+				RunAll()
+				color.HiGreen("* Batch execution `completed` for All tasks")
+				return nil
+			},
+		},
+		{
+			Name:    "start",
+			Aliases: []string{"str"},
+			Usage:   "run all tasks, get data from respective dbs and store to local every 24 hours",
+			Action: func(c *cli.Context) error {
+				for {
+					color.HiGreen("* Batch execution `started` for All tasks for every 24 hours")
+					RunAll()
+					color.HiGreen("* Batch execution `completed` for All tasks for every 24 hours")
+					time.Sleep(time.Hour * 24)
+				}
 				return nil
 			},
 		},
 	}
 
 	return nil
+}
+
+func RunAll() {
+	lines.RunConcurAllBDashboardBranches(28)
+	lines.RunConcurAllQWeeklyBranches(28)
+	lines.RunAllQSearchBranches(28)
+	lines.RunConcurAllQDashboardBranches(28)
+	lines.RunConcurAllQReportBranches(28)
 }
